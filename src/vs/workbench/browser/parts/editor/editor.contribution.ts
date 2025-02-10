@@ -32,7 +32,7 @@ import {
 	CloseLeftEditorsInGroupAction, OpenNextEditor, OpenPreviousEditor, NavigateBackwardsAction, NavigateForwardAction, NavigatePreviousAction, ReopenClosedEditorAction,
 	QuickAccessPreviousRecentlyUsedEditorInGroupAction, QuickAccessPreviousEditorFromHistoryAction, ShowAllEditorsByAppearanceAction, ClearEditorHistoryAction, MoveEditorRightInGroupAction, OpenNextEditorInGroup,
 	OpenPreviousEditorInGroup, OpenNextRecentlyUsedEditorAction, OpenPreviousRecentlyUsedEditorAction, MoveEditorToPreviousGroupAction,
-	MoveEditorToNextGroupAction, MoveEditorToFirstGroupAction, MoveEditorLeftInGroupAction, ClearRecentFilesAction, OpenLastEditorInGroup,
+	MoveEditorToNextGroupAction, MoveEditorToFirstGroupAction, MoveEditorLeftInGroupAction, OpenLastEditorInGroup,
 	ShowEditorsInActiveGroupByMostRecentlyUsedAction, MoveEditorToLastGroupAction, OpenFirstEditorInGroup, MoveGroupUpAction, MoveGroupDownAction, FocusLastGroupAction, SplitEditorLeftAction, SplitEditorRightAction,
 	SplitEditorUpAction, SplitEditorDownAction, MoveEditorToLeftGroupAction, MoveEditorToRightGroupAction, MoveEditorToAboveGroupAction, MoveEditorToBelowGroupAction, CloseAllEditorGroupsAction,
 	JoinAllGroupsAction, FocusLeftGroup, FocusAboveGroup, FocusRightGroup, FocusBelowGroup, EditorLayoutSingleAction, EditorLayoutTwoColumnsAction, EditorLayoutThreeColumnsAction, EditorLayoutTwoByTwoGridAction,
@@ -194,7 +194,7 @@ registerAction2(OpenNextRecentlyUsedEditorInGroupAction);
 registerAction2(OpenPreviousRecentlyUsedEditorInGroupAction);
 
 registerAction2(ReopenClosedEditorAction);
-registerAction2(ClearRecentFilesAction);
+// registerAction2(ClearRecentFilesAction);
 
 registerAction2(ShowAllEditorsByAppearanceAction);
 registerAction2(ShowAllEditorsByMostRecentlyUsedAction);
@@ -647,24 +647,24 @@ MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: CLOSE_EDITOR
 MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: REOPEN_WITH_COMMAND_ID, title: localize2('reopenWith', "Reopen Editor With..."), category: Categories.View }, when: ActiveEditorAvailableEditorIdsContext });
 
 // File menu
-MenuRegistry.appendMenuItem(MenuId.MenubarRecentMenu, {
-	group: '1_editor',
-	command: {
-		id: ReopenClosedEditorAction.ID,
-		title: localize({ key: 'miReopenClosedEditor', comment: ['&& denotes a mnemonic'] }, "&&Reopen Closed Editor"),
-		precondition: ContextKeyExpr.has('canReopenClosedEditor')
-	},
-	order: 1
-});
+// MenuRegistry.appendMenuItem(MenuId.MenubarRecentMenu, {
+// 	group: '1_editor',
+// 	command: {
+// 		id: ReopenClosedEditorAction.ID,
+// 		title: localize({ key: 'miReopenClosedEditor', comment: ['&& denotes a mnemonic'] }, "&&Reopen Closed Editor"),
+// 		precondition: ContextKeyExpr.has('canReopenClosedEditor')
+// 	},
+// 	order: 1
+// });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarRecentMenu, {
-	group: 'z_clear',
-	command: {
-		id: ClearRecentFilesAction.ID,
-		title: localize({ key: 'miClearRecentOpen', comment: ['&& denotes a mnemonic'] }, "&&Clear Recently Opened...")
-	},
-	order: 1
-});
+// MenuRegistry.appendMenuItem(MenuId.MenubarRecentMenu, {
+// 	group: 'z_clear',
+// 	command: {
+// 		id: ClearRecentFilesAction.ID,
+// 		title: localize({ key: 'miClearRecentOpen', comment: ['&& denotes a mnemonic'] }, "&&Clear Recently Opened...")
+// 	},
+// 	order: 1
+// });
 
 MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
 	title: localize('miShare', "Share"),

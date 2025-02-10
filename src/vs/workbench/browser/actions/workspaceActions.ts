@@ -46,7 +46,7 @@ export class OpenFileAction extends Action2 {
 
 	override async run(accessor: ServicesAccessor, data?: ITelemetryData): Promise<void> {
 		const fileDialogService = accessor.get(IFileDialogService);
-
+		console.log('Run open file action', fileDialogService);
 		return fileDialogService.pickFileAndOpen({ forceNewWindow: false, telemetryExtraData: data });
 	}
 }
@@ -77,7 +77,7 @@ export class OpenFolderAction extends Action2 {
 
 	override async run(accessor: ServicesAccessor, data?: ITelemetryData): Promise<void> {
 		const fileDialogService = accessor.get(IFileDialogService);
-
+		console.log('OpenFolderAction -> run -> data', accessor, data, fileDialogService);
 		return fileDialogService.pickFolderAndOpen({ forceNewWindow: false, telemetryExtraData: data });
 	}
 }

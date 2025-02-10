@@ -28,7 +28,6 @@ import { UserDataProfilesEditor, UserDataProfilesEditorInput, UserDataProfilesEd
 import { SyncDescriptor } from '../../../../platform/instantiation/common/descriptors.js';
 import { IEditorGroupsService } from '../../../services/editor/common/editorGroupsService.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
-import { IHostService } from '../../../services/host/browser/host.js';
 import { IUserDataProfilesEditor } from '../common/userDataProfile.js';
 import { IURLService } from '../../../../platform/url/common/url.js';
 import { IBrowserWorkbenchEnvironmentService } from '../../../services/environment/browser/environmentService.js';
@@ -126,7 +125,7 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
 		this._register(this.registerSwitchProfileAction());
 
 		this.registerOpenProfileSubMenu();
-		this.registerNewWindowWithProfileAction();
+		// this.registerNewWindowWithProfileAction();
 		this.registerProfilesActions();
 		this._register(this.userDataProfilesService.onDidChangeProfiles(() => this.registerProfilesActions()));
 
@@ -178,7 +177,7 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
 		for (const profile of this.userDataProfilesService.profiles) {
 			if (!profile.isTransient) {
 				this.profilesDisposable.value.add(this.registerProfileEntryAction(profile));
-				this.profilesDisposable.value.add(this.registerNewWindowAction(profile));
+				// this.profilesDisposable.value.add(this.registerNewWindowAction(profile));
 			}
 		}
 	}
@@ -210,78 +209,78 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
 		});
 	}
 
-	private registerNewWindowWithProfileAction(): IDisposable {
-		return registerAction2(class NewWindowWithProfileAction extends Action2 {
-			constructor() {
-				super({
-					id: `workbench.profiles.actions.newWindowWithProfile`,
-					title: localize2('newWindowWithProfile', "New Window with Profile..."),
-					category: PROFILES_CATEGORY,
-					precondition: HAS_PROFILES_CONTEXT,
-					f1: true,
-				});
-			}
-			async run(accessor: ServicesAccessor) {
-				const quickInputService = accessor.get(IQuickInputService);
-				const userDataProfilesService = accessor.get(IUserDataProfilesService);
-				const hostService = accessor.get(IHostService);
+	// private registerNewWindowWithProfileAction(): IDisposable {
+	// 	return registerAction2(class NewWindowWithProfileAction extends Action2 {
+	// 		constructor() {
+	// 			super({
+	// 				id: `workbench.profiles.actions.newWindowWithProfile`,
+	// 				title: localize2('newWindowWithProfile', "New Window with Profile..."),
+	// 				category: PROFILES_CATEGORY,
+	// 				precondition: HAS_PROFILES_CONTEXT,
+	// 				f1: true,
+	// 			});
+	// 		}
+	// 		async run(accessor: ServicesAccessor) {
+	// 			const quickInputService = accessor.get(IQuickInputService);
+	// 			const userDataProfilesService = accessor.get(IUserDataProfilesService);
+	// 			const hostService = accessor.get(IHostService);
 
-				const pick = await quickInputService.pick(
-					userDataProfilesService.profiles.map(profile => ({
-						label: profile.name,
-						profile
-					})),
-					{
-						title: localize('new window with profile', "New Window with Profile"),
-						placeHolder: localize('pick profile', "Select Profile"),
-						canPickMany: false
-					});
-				if (pick) {
-					return hostService.openWindow({ remoteAuthority: null, forceProfile: pick.profile.name });
-				}
-			}
-		});
-	}
+	// 			const pick = await quickInputService.pick(
+	// 				userDataProfilesService.profiles.map(profile => ({
+	// 					label: profile.name,
+	// 					profile
+	// 				})),
+	// 				{
+	// 					title: localize('new window with profile', "New Window with Profile"),
+	// 					placeHolder: localize('pick profile', "Select Profile"),
+	// 					canPickMany: false
+	// 				});
+	// 			if (pick) {
+	// 				return hostService.openWindow({ remoteAuthority: null, forceProfile: pick.profile.name });
+	// 			}
+	// 		}
+	// 	});
+	// }
 
-	private registerNewWindowAction(profile: IUserDataProfile): IDisposable {
-		const disposables = new DisposableStore();
+	// private registerNewWindowAction(profile: IUserDataProfile): IDisposable {
+	// 	const disposables = new DisposableStore();
 
-		const id = `workbench.action.openProfile.${profile.name.replace('/\s+/', '_')}`;
+	// 	const id = `workbench.action.openProfile.${profile.name.replace('/\s+/', '_')}`;
 
-		disposables.add(registerAction2(class NewWindowAction extends Action2 {
+	// 	disposables.add(registerAction2(class NewWindowAction extends Action2 {
 
-			constructor() {
-				super({
-					id,
-					title: localize2('openShort', "{0}", profile.name),
-					metadata: {
-						description: localize2('open profile', "Open New Window with {0} Profile", profile.name),
-					},
-					menu: {
-						id: OpenProfileMenu,
-						group: '0_profiles',
-						when: HAS_PROFILES_CONTEXT
-					}
-				});
-			}
+	// 		constructor() {
+	// 			super({
+	// 				id,
+	// 				title: localize2('openShort', "{0}", profile.name),
+	// 				metadata: {
+	// 					description: localize2('open profile', "Open New Window with {0} Profile", profile.name),
+	// 				},
+	// 				menu: {
+	// 					id: OpenProfileMenu,
+	// 					group: '0_profiles',
+	// 					when: HAS_PROFILES_CONTEXT
+	// 				}
+	// 			});
+	// 		}
 
-			override run(accessor: ServicesAccessor): Promise<void> {
-				const hostService = accessor.get(IHostService);
-				return hostService.openWindow({ remoteAuthority: null, forceProfile: profile.name });
-			}
-		}));
+	// 		override run(accessor: ServicesAccessor): Promise<void> {
+	// 			const hostService = accessor.get(IHostService);
+	// 			return hostService.openWindow({ remoteAuthority: null, forceProfile: profile.name });
+	// 		}
+	// 	}));
 
-		disposables.add(MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-			command: {
-				id,
-				category: PROFILES_CATEGORY,
-				title: localize2('open', "Open {0} Profile", profile.name),
-				precondition: HAS_PROFILES_CONTEXT
-			},
-		}));
+	// 	disposables.add(MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
+	// 		command: {
+	// 			id,
+	// 			category: PROFILES_CATEGORY,
+	// 			title: localize2('open', "Open {0} Profile", profile.name),
+	// 			precondition: HAS_PROFILES_CONTEXT
+	// 		},
+	// 	}));
 
-		return disposables;
-	}
+	// 	return disposables;
+	// }
 
 	private registerSwitchProfileAction(): IDisposable {
 		const that = this;

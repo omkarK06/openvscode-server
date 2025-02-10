@@ -15,15 +15,16 @@ import { IAccessibilityService } from '../../../../platform/accessibility/common
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 import { ILabelService } from '../../../../platform/label/common/label.js';
 import { IUpdateService } from '../../../../platform/update/common/update.js';
-import { IOpenRecentAction, MenubarControl } from '../../../browser/parts/titlebar/menubarControl.js';
+import { MenubarControl } from '../../../browser/parts/titlebar/menubarControl.js';
+// import { IOpenRecentAction } from '../../../browser/parts/titlebar/menubarControl.js';
 import { IStorageService } from '../../../../platform/storage/common/storage.js';
-import { IMenubarData, IMenubarMenu, IMenubarKeybinding, IMenubarMenuItemSubmenu, IMenubarMenuItemAction, MenubarMenuItem } from '../../../../platform/menubar/common/menubar.js';
+import { IMenubarData, IMenubarMenu, IMenubarKeybinding, IMenubarMenuItemSubmenu, IMenubarMenuItemAction } from '../../../../platform/menubar/common/menubar.js';
 import { IMenubarService } from '../../../../platform/menubar/electron-sandbox/menubar.js';
 import { INativeHostService } from '../../../../platform/native/common/native.js';
 import { IHostService } from '../../../services/host/browser/host.js';
 import { IPreferencesService } from '../../../services/preferences/common/preferences.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
-import { OpenRecentAction } from '../../../browser/actions/windowActions.js';
+// import { OpenRecentAction } from '../../../browser/actions/windowActions.js';
 import { isICommandActionToggleInfo } from '../../../../platform/action/common/action.js';
 import { getFlatContextMenuActions } from '../../../../platform/actions/browser/menuEntryActionViewItem.js';
 
@@ -131,11 +132,6 @@ export class NativeMenubarControl extends MenubarControl {
 						menuToPopulate.items.push(menubarSubmenuItem);
 					}
 				} else {
-					if (menuItem.id === OpenRecentAction.ID) {
-						const actions = this.getOpenRecentActions().map(this.transformOpenRecentAction);
-						menuToPopulate.items.push(...actions);
-					}
-
 					const menubarMenuItem: IMenubarMenuItemAction = {
 						id: menuItem.id,
 						label: title
@@ -160,19 +156,19 @@ export class NativeMenubarControl extends MenubarControl {
 		}
 	}
 
-	private transformOpenRecentAction(action: Separator | IOpenRecentAction): MenubarMenuItem {
-		if (action instanceof Separator) {
-			return { id: 'vscode.menubar.separator' };
-		}
+	// private transformOpenRecentAction(action: Separator | IOpenRecentAction): MenubarMenuItem {
+	// 	if (action instanceof Separator) {
+	// 		return { id: 'vscode.menubar.separator' };
+	// 	}
 
-		return {
-			id: action.id,
-			uri: action.uri,
-			remoteAuthority: action.remoteAuthority,
-			enabled: action.enabled,
-			label: action.label
-		};
-	}
+	// 	return {
+	// 		id: action.id,
+	// 		uri: action.uri,
+	// 		remoteAuthority: action.remoteAuthority,
+	// 		enabled: action.enabled,
+	// 		label: action.label
+	// 	};
+	// }
 
 	private getAdditionalKeybindings(): { [id: string]: IMenubarKeybinding } {
 		const keybindings: { [id: string]: IMenubarKeybinding } = {};
