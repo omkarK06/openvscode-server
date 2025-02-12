@@ -96,15 +96,22 @@ export class TerminalViewPane extends ViewPane {
 			this._onDidChangeViewWelcomeState.fire();
 		}));
 
+		console.log('TerminalViewPane -> constructor -> this._terminalGroupService.instances.length', this._hasWelcomeScreen(), this._terminalGroupService.instances.length);
+		if (this._hasWelcomeScreen() && this._terminalGroupService.instances.length <= 1) {
+			this._onDidChangeViewWelcomeState.fire();
+		}
+
 		this._register(this._terminalService.onDidChangeInstances(() => {
 			// If the first terminal is opened, hide the welcome view
 			// and if the last one is closed, show it again
+			console.log('TerminalViewPane -> constructor -> this._terminalGroupService.instances.length', this._hasWelcomeScreen(), this._terminalGroupService.instances.length);
 			if (this._hasWelcomeScreen() && this._terminalGroupService.instances.length <= 1) {
 				this._onDidChangeViewWelcomeState.fire();
 			}
 			if (!this._parentDomElement) { return; }
 			// If we do not have the tab view yet, create it now.
 			if (!this._terminalTabbedView) {
+				console.log('TerminalViewPane -> constructor -> this._terminalTabbedView', this._terminalTabbedView);
 				this._createTabsView();
 			}
 			// If we just opened our first terminal, layout
@@ -118,6 +125,7 @@ export class TerminalViewPane extends ViewPane {
 		this._viewShowing = TerminalContextKeys.viewShowing.bindTo(this._contextKeyService);
 		this._register(this.onDidChangeBodyVisibility(e => {
 			if (e) {
+				console.log('TerminalViewPane -> constructor -> e', e);
 				this._terminalTabbedView?.rerenderTabs();
 			}
 		}));
@@ -238,6 +246,7 @@ export class TerminalViewPane extends ViewPane {
 	}
 
 	private _createTabsView(): void {
+		console.log('TerminalViewPane -> _createTabsView -> this._parentDomElement', this._parentDomElement);
 		if (!this._parentDomElement) {
 			return;
 		}
@@ -353,7 +362,7 @@ export class TerminalViewPane extends ViewPane {
 	}
 
 	private _hasWelcomeScreen(): boolean {
-		return !this._terminalService.isProcessSupportRegistered;
+		return this._terminalService.isProcessSupportRegistered;
 	}
 
 	override shouldShowWelcome(): boolean {

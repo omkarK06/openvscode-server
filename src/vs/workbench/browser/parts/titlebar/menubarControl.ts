@@ -6,19 +6,19 @@
 import './media/menubarControl.css';
 import { localize, localize2 } from '../../../../nls.js';
 import { IMenuService, MenuId, IMenu, SubmenuItemAction, registerAction2, Action2, MenuItemAction, MenuRegistry } from '../../../../platform/actions/common/actions.js';
-import { MenuBarVisibility, IWindowOpenable, getMenuBarVisibility, hasNativeTitlebar, TitleBarSetting } from '../../../../platform/window/common/window.js';
+import { MenuBarVisibility, getMenuBarVisibility, hasNativeTitlebar, TitleBarSetting } from '../../../../platform/window/common/window.js';
 import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
-import { IAction, Action, SubmenuAction, Separator, IActionRunner, ActionRunner, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification, toAction } from '../../../../base/common/actions.js';
+import { IAction, Action, SubmenuAction, Separator, IActionRunner, ActionRunner, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from '../../../../base/common/actions.js';
 import { addDisposableListener, Dimension, EventType } from '../../../../base/browser/dom.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { isMacintosh, isWeb, isIOS, isNative } from '../../../../base/common/platform.js';
 import { IConfigurationService, IConfigurationChangeEvent } from '../../../../platform/configuration/common/configuration.js';
 import { Event, Emitter } from '../../../../base/common/event.js';
 import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
-import { IRecentlyOpened, isRecentFolder, IRecent, isRecentWorkspace, IWorkspacesService } from '../../../../platform/workspaces/common/workspaces.js';
+import { IRecentlyOpened, IWorkspacesService } from '../../../../platform/workspaces/common/workspaces.js';
 import { RunOnceScheduler } from '../../../../base/common/async.js';
-import { URI } from '../../../../base/common/uri.js';
-import { ILabelService, Verbosity } from '../../../../platform/label/common/label.js';
+// import { URI } from '../../../../base/common/uri.js';
+import { ILabelService } from '../../../../platform/label/common/label.js';
 import { IUpdateService, StateType } from '../../../../platform/update/common/update.js';
 import { IStorageService, StorageScope, StorageTarget } from '../../../../platform/storage/common/storage.js';
 import { INotificationService, Severity } from '../../../../platform/notification/common/notification.js';
@@ -26,7 +26,7 @@ import { IPreferencesService } from '../../../services/preferences/common/prefer
 import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
 import { MenuBar, IMenuBarOptions } from '../../../../base/browser/ui/menu/menubar.js';
 import { HorizontalDirection, IMenuDirection, VerticalDirection } from '../../../../base/browser/ui/menu/menu.js';
-import { mnemonicMenuLabel, unmnemonicLabel } from '../../../../base/common/labels.js';
+import { mnemonicMenuLabel } from '../../../../base/common/labels.js';
 import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
 import { isFullscreen, onDidChangeFullscreen } from '../../../../base/browser/browser.js';
 import { IHostService } from '../../../services/host/browser/host.js';
@@ -36,14 +36,14 @@ import { KeybindingWeight } from '../../../../platform/keybinding/common/keybind
 import { IsMacNativeContext, IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
-import { OpenRecentAction } from '../../actions/windowActions.js';
+// import { OpenRecentAction } from '../../actions/windowActions.js';
 import { isICommandActionToggleInfo } from '../../../../platform/action/common/action.js';
 import { getFlatContextMenuActions } from '../../../../platform/actions/browser/menuEntryActionViewItem.js';
 import { defaultMenuStyles } from '../../../../platform/theme/browser/defaultStyles.js';
 import { mainWindow } from '../../../../base/browser/window.js';
 import { ActivityBarPosition } from '../../../services/layout/browser/layoutService.js';
 
-export type IOpenRecentAction = IAction & { uri: URI; remoteAuthority?: string };
+// export type IOpenRecentAction = IAction & { uri: URI; remoteAuthority?: string };
 
 MenuRegistry.appendMenuItem(MenuId.MenubarMainMenu, {
 	submenu: MenuId.MenubarFileMenu,
@@ -241,33 +241,33 @@ export abstract class MenubarControl extends Disposable {
 		this.updateMenubar();
 	}
 
-	protected getOpenRecentActions(): (Separator | IOpenRecentAction)[] {
-		if (!this.recentlyOpened) {
-			return [];
-		}
+	// protected getOpenRecentActions(): (Separator | IOpenRecentAction)[] {
+	// 	if (!this.recentlyOpened) {
+	// 		return [];
+	// 	}
 
-		const { workspaces, files } = this.recentlyOpened;
+	// 	const { workspaces, files } = this.recentlyOpened;
 
-		const result = [];
+	// 	const result = [];
 
-		if (workspaces.length > 0) {
-			for (let i = 0; i < MenubarControl.MAX_MENU_RECENT_ENTRIES && i < workspaces.length; i++) {
-				result.push(this.createOpenRecentMenuAction(workspaces[i]));
-			}
+	// 	if (workspaces.length > 0) {
+	// 		for (let i = 0; i < MenubarControl.MAX_MENU_RECENT_ENTRIES && i < workspaces.length; i++) {
+	// 			result.push(this.createOpenRecentMenuAction(workspaces[i]));
+	// 		}
 
-			result.push(new Separator());
-		}
+	// 		result.push(new Separator());
+	// 	}
 
-		if (files.length > 0) {
-			for (let i = 0; i < MenubarControl.MAX_MENU_RECENT_ENTRIES && i < files.length; i++) {
-				result.push(this.createOpenRecentMenuAction(files[i]));
-			}
+	// 	if (files.length > 0) {
+	// 		for (let i = 0; i < MenubarControl.MAX_MENU_RECENT_ENTRIES && i < files.length; i++) {
+	// 			result.push(this.createOpenRecentMenuAction(files[i]));
+	// 		}
 
-			result.push(new Separator());
-		}
+	// 		result.push(new Separator());
+	// 	}
 
-		return result;
-	}
+	// 	return result;
+	// }
 
 	protected onDidChangeWindowFocus(hasFocus: boolean): void {
 		// When we regain focus, update the recent menu items
@@ -307,44 +307,44 @@ export abstract class MenubarControl extends Disposable {
 		}
 	}
 
-	private createOpenRecentMenuAction(recent: IRecent): IOpenRecentAction {
+	// private createOpenRecentMenuAction(recent: IRecent): IOpenRecentAction {
 
-		let label: string;
-		let uri: URI;
-		let commandId: string;
-		let openable: IWindowOpenable;
-		const remoteAuthority = recent.remoteAuthority;
+	// 	let label: string;
+	// 	let uri: URI;
+	// 	let commandId: string;
+	// 	let openable: IWindowOpenable;
+	// 	const remoteAuthority = recent.remoteAuthority;
 
-		if (isRecentFolder(recent)) {
-			uri = recent.folderUri;
-			label = recent.label || this.labelService.getWorkspaceLabel(uri, { verbose: Verbosity.LONG });
-			commandId = 'openRecentFolder';
-			openable = { folderUri: uri };
-		} else if (isRecentWorkspace(recent)) {
-			uri = recent.workspace.configPath;
-			label = recent.label || this.labelService.getWorkspaceLabel(recent.workspace, { verbose: Verbosity.LONG });
-			commandId = 'openRecentWorkspace';
-			openable = { workspaceUri: uri };
-		} else {
-			uri = recent.fileUri;
-			label = recent.label || this.labelService.getUriLabel(uri, { appendWorkspaceSuffix: true });
-			commandId = 'openRecentFile';
-			openable = { fileUri: uri };
-		}
+	// 	if (isRecentFolder(recent)) {
+	// 		uri = recent.folderUri;
+	// 		label = recent.label || this.labelService.getWorkspaceLabel(uri, { verbose: Verbosity.LONG });
+	// 		commandId = 'openRecentFolder';
+	// 		openable = { folderUri: uri };
+	// 	} else if (isRecentWorkspace(recent)) {
+	// 		uri = recent.workspace.configPath;
+	// 		label = recent.label || this.labelService.getWorkspaceLabel(recent.workspace, { verbose: Verbosity.LONG });
+	// 		commandId = 'openRecentWorkspace';
+	// 		openable = { workspaceUri: uri };
+	// 	} else {
+	// 		uri = recent.fileUri;
+	// 		label = recent.label || this.labelService.getUriLabel(uri, { appendWorkspaceSuffix: true });
+	// 		commandId = 'openRecentFile';
+	// 		openable = { fileUri: uri };
+	// 	}
 
-		const ret = toAction({
-			id: commandId, label: unmnemonicLabel(label), run: (browserEvent: KeyboardEvent) => {
-				const openInNewWindow = browserEvent && ((!isMacintosh && (browserEvent.ctrlKey || browserEvent.shiftKey)) || (isMacintosh && (browserEvent.metaKey || browserEvent.altKey)));
+	// 	const ret = toAction({
+	// 		id: commandId, label: unmnemonicLabel(label), run: (browserEvent: KeyboardEvent) => {
+	// 			const openInNewWindow = browserEvent && ((!isMacintosh && (browserEvent.ctrlKey || browserEvent.shiftKey)) || (isMacintosh && (browserEvent.metaKey || browserEvent.altKey)));
 
-				return this.hostService.openWindow([openable], {
-					forceNewWindow: !!openInNewWindow,
-					remoteAuthority: remoteAuthority || null // local window if remoteAuthority is not set or can not be deducted from the openable
-				});
-			}
-		});
+	// 			return this.hostService.openWindow([openable], {
+	// 				forceNewWindow: !!openInNewWindow,
+	// 				remoteAuthority: remoteAuthority || null // local window if remoteAuthority is not set or can not be deducted from the openable
+	// 			});
+	// 		}
+	// 	});
 
-		return Object.assign(ret, { uri, remoteAuthority });
-	}
+	// 	return Object.assign(ret, { uri, remoteAuthority });
+	// }
 
 	private notifyUserOfCustomMenubarAccessibility(): void {
 		if (isWeb || isMacintosh) {
@@ -509,9 +509,9 @@ export class CustomMenubarControl extends MenubarControl {
 
 	private insertActionsBefore(nextAction: IAction, target: IAction[]): void {
 		switch (nextAction.id) {
-			case OpenRecentAction.ID:
-				target.push(...this.getOpenRecentActions());
-				break;
+			// case OpenRecentAction.ID:
+			// 	target.push(...this.getOpenRecentActions());
+			// 	break;
 
 			case 'workbench.action.showAboutDialog':
 				if (!isMacintosh && !isWeb) {

@@ -61,8 +61,8 @@ registerSingleton(ITerminalProfileService, TerminalProfileService, Instantiation
 
 // Register workbench contributions
 // This contribution blocks startup as it's critical to enable the web embedder window.createTerminal API
-registerWorkbenchContribution2(TerminalMainContribution.ID, TerminalMainContribution, WorkbenchPhase.BlockStartup);
-registerWorkbenchContribution2(RemoteTerminalBackendContribution.ID, RemoteTerminalBackendContribution, WorkbenchPhase.AfterRestored);
+// registerWorkbenchContribution2(TerminalMainContribution.ID, TerminalMainContribution, WorkbenchPhase.BlockStartup);
+// registerWorkbenchContribution2(RemoteTerminalBackendContribution.ID, RemoteTerminalBackendContribution, WorkbenchPhase.AfterRestored);
 
 // Register configurations
 registerTerminalPlatformConfiguration();
@@ -244,8 +244,8 @@ registerSendSequenceKeybinding('\u001f', {
 	mac: { primary: KeyMod.WinCtrl | KeyCode.Slash }
 });
 
-setupTerminalCommands();
+// setupTerminalCommands();
 
-setupTerminalMenus();
+// setupTerminalMenus();
 
 registerColors();

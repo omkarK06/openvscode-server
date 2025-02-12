@@ -116,62 +116,61 @@ export class WelcomeView extends ViewPane {
 	}
 }
 
-const viewsRegistry = Registry.as<IViewsRegistry>(Extensions.ViewsRegistry);
-viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize(
-		{
-			key: 'openAFileWhichCanBeDebugged',
-			comment: [
-				'Please do not translate the word "command", it is part of our internal syntax which must not change',
-				'{Locked="](command:{0})"}'
-			]
-		},
-		"[Open a file](command:{0}) which can be debugged or run.", (isMacintosh && !isWeb) ? OpenFileFolderAction.ID : OpenFileAction.ID
-	),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.toNegated()),
-	group: ViewContentGroups.Open,
-});
+// const viewsRegistry = Registry.as<IViewsRegistry>(Extensions.ViewsRegistry);
+// viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
+// 	content: localize(
+// 		{
+// 			key: 'openAFileWhichCanBeDebugged',
+// 			comment: [
+// 				'Please do not translate the word "command", it is part of our internal syntax which must not change',
+// 				'{Locked="](command:{0})"}'
+// 			]
+// 		},
+// 		"[Open a file](command:{0}) which can be debugged or run.", (isMacintosh && !isWeb) ? OpenFileFolderAction.ID : OpenFileAction.ID
+// 	),
+// 	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.toNegated()),
+// 	group: ViewContentGroups.Open,
+// });
 
 let debugKeybindingLabel = '';
-viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: `[${localize('runAndDebugAction', "Run and Debug")}${debugKeybindingLabel}](command:${DEBUG_START_COMMAND_ID})`,
-	when: CONTEXT_DEBUGGERS_AVAILABLE,
-	group: ViewContentGroups.Debug,
-	// Allow inserting more buttons directly after this one (by setting order to 1).
-	order: 1
-});
+// viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
+// 	content: `[${localize('runAndDebugAction', "Run and Debug")}${debugKeybindingLabel}](command:${DEBUG_START_COMMAND_ID})`,
+// 	when: CONTEXT_DEBUGGERS_AVAILABLE,
+// 	group: ViewContentGroups.Debug,
+// 	// Allow inserting more buttons directly after this one (by setting order to 1).
+// 	order: 1
+// });
 
-viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize(
-		{
-			key: 'customizeRunAndDebug',
-			comment: [
-				'Please do not translate the word "command", it is part of our internal syntax which must not change',
-				'{Locked="](command:{0})"}'
-			]
-		},
-		"To customize Run and Debug [create a launch.json file](command:{0}).", `${DEBUG_CONFIGURE_COMMAND_ID}?${encodeURIComponent(JSON.stringify([{ addNew: true }]))}`),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.notEqualsTo('empty')),
-	group: ViewContentGroups.Debug
-});
+// viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
+// 	content: localize(
+// 		{
+// 			key: 'customizeRunAndDebug',
+// 			comment: [
+// 				'Please do not translate the word "command", it is part of our internal syntax which must not change',
+// 				'{Locked="](command:{0})"}'
+// 			]
+// 		},
+// 		"To customize Run and Debug [create a launch.json file](command:{0}).", `${DEBUG_CONFIGURE_COMMAND_ID}?${encodeURIComponent(JSON.stringify([{ addNew: true }]))}`),
+// 	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.notEqualsTo('empty')),
+// 	group: ViewContentGroups.Debug
+// });
 
-viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize(
-		{
-			key: 'customizeRunAndDebugOpenFolder',
-			comment: [
-				'Please do not translate the word "command", it is part of our internal syntax which must not change',
-				'Please do not translate "launch.json", it is the specific configuration file name',
-				'{Locked="](command:{0})"}',
-			]
-		},
-		"To customize Run and Debug, [open a folder](command:{0}) and create a launch.json file.", (isMacintosh && !isWeb) ? OpenFileFolderAction.ID : OpenFolderAction.ID),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.isEqualTo('empty')),
-	group: ViewContentGroups.Debug
-});
+// viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
+// 	content: localize(
+// 		{
+// 			key: 'customizeRunAndDebugOpenFolder',
+// 			comment: [
+// 				'Please do not translate the word "command", it is part of our internal syntax which must not change',
+// 				'Please do not translate "launch.json", it is the specific configuration file name',
+// 				'{Locked="](command:{0})"}',
+// 			]
+// 		},
+// 		"To customize Run and Debug, [open a folder](command:{0}) and create a launch.json file.", (isMacintosh && !isWeb) ? OpenFileFolderAction.ID : OpenFolderAction.ID),
+// 	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.isEqualTo('empty')),
+// 	group: ViewContentGroups.Debug
+// });
 
-viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize('allDebuggersDisabled', "All debug extensions are disabled. Enable a debug extension or install a new one from the Marketplace."),
-	when: CONTEXT_DEBUG_EXTENSION_AVAILABLE.toNegated(),
-	group: ViewContentGroups.Debug
-});
+// viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
+// 	content: localize('allDebuggersDisabled', "All debug extensions are disabled. Enable a debug extension or install a new one from the Marketplace."),
+// 	group: ViewContentGroups.Debug
+// });

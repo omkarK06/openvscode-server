@@ -168,137 +168,137 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 	}
 }
 
-MenuRegistry.appendMenuItem(MenuId.ViewContainerTitle, {
-	when: ContextKeyExpr.and(
-		ContextKeyExpr.equals('viewContainer', VIEWLET_ID),
-		CONTEXT_DEBUG_UX.notEqualsTo('simple'),
-		WorkbenchStateContext.notEqualsTo('empty'),
-		ContextKeyExpr.or(
-			CONTEXT_DEBUG_STATE.isEqualTo('inactive'),
-			ContextKeyExpr.notEquals('config.debug.toolBarLocation', 'docked')
-		),
-		ContextKeyExpr.or(
-			ContextKeyExpr.not('config.debug.hideLauncherWhileDebugging'),
-			ContextKeyExpr.not('inDebugMode')
-		)
-	),
-	order: 10,
-	group: 'navigation',
-	command: {
-		precondition: CONTEXT_DEBUG_STATE.notEqualsTo(getStateLabel(State.Initializing)),
-		id: DEBUG_START_COMMAND_ID,
-		title: DEBUG_START_LABEL
-	}
-});
+// MenuRegistry.appendMenuItem(MenuId.ViewContainerTitle, {
+// 	when: ContextKeyExpr.and(
+// 		ContextKeyExpr.equals('viewContainer', VIEWLET_ID),
+// 		CONTEXT_DEBUG_UX.notEqualsTo('simple'),
+// 		WorkbenchStateContext.notEqualsTo('empty'),
+// 		ContextKeyExpr.or(
+// 			CONTEXT_DEBUG_STATE.isEqualTo('inactive'),
+// 			ContextKeyExpr.notEquals('config.debug.toolBarLocation', 'docked')
+// 		),
+// 		ContextKeyExpr.or(
+// 			ContextKeyExpr.not('config.debug.hideLauncherWhileDebugging'),
+// 			ContextKeyExpr.not('inDebugMode')
+// 		)
+// 	),
+// 	order: 10,
+// 	group: 'navigation',
+// 	command: {
+// 		precondition: CONTEXT_DEBUG_STATE.notEqualsTo(getStateLabel(State.Initializing)),
+// 		id: DEBUG_START_COMMAND_ID,
+// 		title: DEBUG_START_LABEL
+// 	}
+// });
 
-registerAction2(class extends Action2 {
-	constructor() {
-		super({
-			id: DEBUG_CONFIGURE_COMMAND_ID,
-			title: {
-				value: DEBUG_CONFIGURE_LABEL,
-				original: 'Open \'launch.json\'',
-				mnemonicTitle: nls.localize({ key: 'miOpenConfigurations', comment: ['&& denotes a mnemonic'] }, "Open &&Configurations")
-			},
-			metadata: {
-				description: nls.localize2('openLaunchConfigDescription', 'Opens the file used to configure how your program is debugged')
-			},
-			f1: true,
-			icon: debugConfigure,
-			precondition: CONTEXT_DEBUG_UX.notEqualsTo('simple'),
-			menu: [{
-				id: MenuId.ViewContainerTitle,
-				group: 'navigation',
-				order: 20,
-				when: ContextKeyExpr.and(ContextKeyExpr.equals('viewContainer', VIEWLET_ID), CONTEXT_DEBUG_UX.notEqualsTo('simple'), WorkbenchStateContext.notEqualsTo('empty'),
-					ContextKeyExpr.or(CONTEXT_DEBUG_STATE.isEqualTo('inactive'), ContextKeyExpr.notEquals('config.debug.toolBarLocation', 'docked')))
-			}, {
-				id: MenuId.ViewContainerTitle,
-				order: 20,
-				// Show in debug viewlet secondary actions when debugging and debug toolbar is docked
-				when: ContextKeyExpr.and(ContextKeyExpr.equals('viewContainer', VIEWLET_ID), CONTEXT_DEBUG_STATE.notEqualsTo('inactive'), ContextKeyExpr.equals('config.debug.toolBarLocation', 'docked'))
-			}, {
-				id: MenuId.MenubarDebugMenu,
-				group: '2_configuration',
-				order: 1,
-				when: CONTEXT_DEBUGGERS_AVAILABLE
-			}]
-		});
-	}
+// registerAction2(class extends Action2 {
+// 	constructor() {
+// 		super({
+// 			id: DEBUG_CONFIGURE_COMMAND_ID,
+// 			title: {
+// 				value: DEBUG_CONFIGURE_LABEL,
+// 				original: 'Open \'launch.json\'',
+// 				mnemonicTitle: nls.localize({ key: 'miOpenConfigurations', comment: ['&& denotes a mnemonic'] }, "Open &&Configurations")
+// 			},
+// 			metadata: {
+// 				description: nls.localize2('openLaunchConfigDescription', 'Opens the file used to configure how your program is debugged')
+// 			},
+// 			f1: true,
+// 			icon: debugConfigure,
+// 			precondition: CONTEXT_DEBUG_UX.notEqualsTo('simple'),
+// 			menu: [{
+// 				id: MenuId.ViewContainerTitle,
+// 				group: 'navigation',
+// 				order: 20,
+// 				when: ContextKeyExpr.and(ContextKeyExpr.equals('viewContainer', VIEWLET_ID), CONTEXT_DEBUG_UX.notEqualsTo('simple'), WorkbenchStateContext.notEqualsTo('empty'),
+// 					ContextKeyExpr.or(CONTEXT_DEBUG_STATE.isEqualTo('inactive'), ContextKeyExpr.notEquals('config.debug.toolBarLocation', 'docked')))
+// 			}, {
+// 				id: MenuId.ViewContainerTitle,
+// 				order: 20,
+// 				// Show in debug viewlet secondary actions when debugging and debug toolbar is docked
+// 				when: ContextKeyExpr.and(ContextKeyExpr.equals('viewContainer', VIEWLET_ID), CONTEXT_DEBUG_STATE.notEqualsTo('inactive'), ContextKeyExpr.equals('config.debug.toolBarLocation', 'docked'))
+// 			}, {
+// 				id: MenuId.MenubarDebugMenu,
+// 				group: '2_configuration',
+// 				order: 1,
+// 				when: CONTEXT_DEBUGGERS_AVAILABLE
+// 			}]
+// 		});
+// 	}
 
-	async run(accessor: ServicesAccessor, opts?: { addNew?: boolean }): Promise<void> {
-		const debugService = accessor.get(IDebugService);
-		const quickInputService = accessor.get(IQuickInputService);
-		const configurationManager = debugService.getConfigurationManager();
-		let launch: ILaunch | undefined;
-		if (configurationManager.selectedConfiguration.name) {
-			launch = configurationManager.selectedConfiguration.launch;
-		} else {
-			const launches = configurationManager.getLaunches().filter(l => !l.hidden);
-			if (launches.length === 1) {
-				launch = launches[0];
-			} else {
-				const picks = launches.map(l => ({ label: l.name, launch: l }));
-				const picked = await quickInputService.pick<{ label: string; launch: ILaunch }>(picks, {
-					activeItem: picks[0],
-					placeHolder: nls.localize({ key: 'selectWorkspaceFolder', comment: ['User picks a workspace folder or a workspace configuration file here. Workspace configuration files can contain settings and thus a launch.json configuration can be written into one.'] }, "Select a workspace folder to create a launch.json file in or add it to the workspace config file")
-				});
-				if (picked) {
-					launch = picked.launch;
-				}
-			}
-		}
+// 	async run(accessor: ServicesAccessor, opts?: { addNew?: boolean }): Promise<void> {
+// 		const debugService = accessor.get(IDebugService);
+// 		const quickInputService = accessor.get(IQuickInputService);
+// 		const configurationManager = debugService.getConfigurationManager();
+// 		let launch: ILaunch | undefined;
+// 		if (configurationManager.selectedConfiguration.name) {
+// 			launch = configurationManager.selectedConfiguration.launch;
+// 		} else {
+// 			const launches = configurationManager.getLaunches().filter(l => !l.hidden);
+// 			if (launches.length === 1) {
+// 				launch = launches[0];
+// 			} else {
+// 				const picks = launches.map(l => ({ label: l.name, launch: l }));
+// 				const picked = await quickInputService.pick<{ label: string; launch: ILaunch }>(picks, {
+// 					activeItem: picks[0],
+// 					placeHolder: nls.localize({ key: 'selectWorkspaceFolder', comment: ['User picks a workspace folder or a workspace configuration file here. Workspace configuration files can contain settings and thus a launch.json configuration can be written into one.'] }, "Select a workspace folder to create a launch.json file in or add it to the workspace config file")
+// 				});
+// 				if (picked) {
+// 					launch = picked.launch;
+// 				}
+// 			}
+// 		}
 
-		if (launch) {
-			const { editor } = await launch.openConfigFile({ preserveFocus: false });
-			if (editor && opts?.addNew) {
-				const codeEditor = <ICodeEditor>editor.getControl();
-				if (codeEditor) {
-					await codeEditor.getContribution<IDebugEditorContribution>(EDITOR_CONTRIBUTION_ID)?.addLaunchConfiguration();
-				}
-			}
-		}
-	}
-});
+// 		if (launch) {
+// 			const { editor } = await launch.openConfigFile({ preserveFocus: false });
+// 			if (editor && opts?.addNew) {
+// 				const codeEditor = <ICodeEditor>editor.getControl();
+// 				if (codeEditor) {
+// 					await codeEditor.getContribution<IDebugEditorContribution>(EDITOR_CONTRIBUTION_ID)?.addLaunchConfiguration();
+// 				}
+// 			}
+// 		}
+// 	}
+// });
 
 
-registerAction2(class extends Action2 {
-	constructor() {
-		super({
-			id: 'debug.toggleReplIgnoreFocus',
-			title: nls.localize('debugPanel', "Debug Console"),
-			toggled: ContextKeyExpr.has(`view.${REPL_VIEW_ID}.visible`),
-			menu: [{
-				id: ViewsSubMenu,
-				group: '3_toggleRepl',
-				order: 30,
-				when: ContextKeyExpr.and(ContextKeyExpr.equals('viewContainer', VIEWLET_ID))
-			}]
-		});
-	}
+// registerAction2(class extends Action2 {
+// 	constructor() {
+// 		super({
+// 			id: 'debug.toggleReplIgnoreFocus',
+// 			title: nls.localize('debugPanel', "Debug Console"),
+// 			toggled: ContextKeyExpr.has(`view.${REPL_VIEW_ID}.visible`),
+// 			menu: [{
+// 				id: ViewsSubMenu,
+// 				group: '3_toggleRepl',
+// 				order: 30,
+// 				when: ContextKeyExpr.and(ContextKeyExpr.equals('viewContainer', VIEWLET_ID))
+// 			}]
+// 		});
+// 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const viewsService = accessor.get(IViewsService);
-		if (viewsService.isViewVisible(REPL_VIEW_ID)) {
-			viewsService.closeView(REPL_VIEW_ID);
-		} else {
-			await viewsService.openView(REPL_VIEW_ID);
-		}
-	}
-});
+// 	async run(accessor: ServicesAccessor): Promise<void> {
+// 		const viewsService = accessor.get(IViewsService);
+// 		if (viewsService.isViewVisible(REPL_VIEW_ID)) {
+// 			viewsService.closeView(REPL_VIEW_ID);
+// 		} else {
+// 			await viewsService.openView(REPL_VIEW_ID);
+// 		}
+// 	}
+// });
 
-MenuRegistry.appendMenuItem(MenuId.ViewContainerTitle, {
-	when: ContextKeyExpr.and(
-		ContextKeyExpr.equals('viewContainer', VIEWLET_ID),
-		CONTEXT_DEBUG_STATE.notEqualsTo('inactive'),
-		ContextKeyExpr.or(
-			ContextKeyExpr.equals('config.debug.toolBarLocation', 'docked'),
-			ContextKeyExpr.has('config.debug.hideLauncherWhileDebugging')
-		)
-	),
-	order: 10,
-	command: {
-		id: SELECT_AND_START_ID,
-		title: nls.localize('startAdditionalSession', "Start Additional Session"),
-	}
-});
+// MenuRegistry.appendMenuItem(MenuId.ViewContainerTitle, {
+// 	when: ContextKeyExpr.and(
+// 		ContextKeyExpr.equals('viewContainer', VIEWLET_ID),
+// 		CONTEXT_DEBUG_STATE.notEqualsTo('inactive'),
+// 		ContextKeyExpr.or(
+// 			ContextKeyExpr.equals('config.debug.toolBarLocation', 'docked'),
+// 			ContextKeyExpr.has('config.debug.hideLauncherWhileDebugging')
+// 		)
+// 	),
+// 	order: 10,
+// 	command: {
+// 		id: SELECT_AND_START_ID,
+// 		title: nls.localize('startAdditionalSession', "Start Additional Session"),
+// 	}
+// });

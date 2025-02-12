@@ -7,7 +7,7 @@ import { Event } from '../../base/common/event.js';
 import { Disposable } from '../../base/common/lifecycle.js';
 import { IContextKeyService, IContextKey, setConstant as setConstantContextKey } from '../../platform/contextkey/common/contextkey.js';
 import { InputFocusedContext, IsMacContext, IsLinuxContext, IsWindowsContext, IsWebContext, IsMacNativeContext, IsDevelopmentContext, IsIOSContext, ProductQualityContext, IsMobileContext } from '../../platform/contextkey/common/contextkeys.js';
-import { SplitEditorsVertically, InEditorZenModeContext, AuxiliaryBarVisibleContext, SideBarVisibleContext, PanelAlignmentContext, PanelMaximizedContext, PanelVisibleContext, EmbedderIdentifierContext, EditorTabsVisibleContext, IsMainEditorCenteredLayoutContext, MainEditorAreaVisibleContext, DirtyWorkingCopiesContext, EmptyWorkspaceSupportContext, EnterMultiRootWorkspaceSupportContext, HasWebFileSystemAccess, IsMainWindowFullscreenContext, OpenFolderWorkspaceSupportContext, RemoteNameContext, VirtualWorkspaceContext, WorkbenchStateContext, WorkspaceFolderCountContext, PanelPositionContext, TemporaryWorkspaceContext, TitleBarVisibleContext, TitleBarStyleContext, IsAuxiliaryWindowFocusedContext, ActiveEditorGroupEmptyContext, ActiveEditorGroupIndexContext, ActiveEditorGroupLastContext, ActiveEditorGroupLockedContext, MultipleEditorGroupsContext, EditorsVisibleContext } from '../common/contextkeys.js';
+import { SplitEditorsVertically, InEditorZenModeContext, AuxiliaryBarVisibleContext, SideBarVisibleContext, PanelAlignmentContext, PanelMaximizedContext, PanelVisibleContext, EmbedderIdentifierContext, EditorTabsVisibleContext, IsMainEditorCenteredLayoutContext, MainEditorAreaVisibleContext, DirtyWorkingCopiesContext, HasWebFileSystemAccess, IsMainWindowFullscreenContext, RemoteNameContext, VirtualWorkspaceContext, WorkbenchStateContext, PanelPositionContext, TemporaryWorkspaceContext, TitleBarVisibleContext, TitleBarStyleContext, IsAuxiliaryWindowFocusedContext, ActiveEditorGroupEmptyContext, ActiveEditorGroupIndexContext, ActiveEditorGroupLastContext, ActiveEditorGroupLockedContext, MultipleEditorGroupsContext, EditorsVisibleContext } from '../common/contextkeys.js';
 import { trackFocus, addDisposableListener, EventType, onDidRegisterWindow, getActiveWindow, isEditableElement } from '../../base/browser/dom.js';
 import { preferredSideBySideGroupDirection, GroupDirection, IEditorGroupsService } from '../services/editor/common/editorGroupsService.js';
 import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
@@ -17,7 +17,7 @@ import { IWorkbenchLayoutService, Parts, positionToString } from '../services/la
 import { getRemoteName } from '../../platform/remote/common/remoteHosts.js';
 import { getVirtualWorkspaceScheme } from '../../platform/workspace/common/virtualWorkspace.js';
 import { IWorkingCopyService } from '../services/workingCopy/common/workingCopyService.js';
-import { isNative } from '../../base/common/platform.js';
+// import { isNative } from '../../base/common/platform.js';
 import { IPaneCompositePartService } from '../services/panecomposite/browser/panecomposite.js';
 import { WebFileSystemAccess } from '../../platform/files/browser/webFileSystemAccess.js';
 import { IProductService } from '../../platform/product/common/productService.js';
@@ -42,11 +42,6 @@ export class WorkbenchContextKeysHandler extends Disposable {
 	private splitEditorsVerticallyContext: IContextKey<boolean>;
 
 	private workbenchStateContext: IContextKey<string>;
-	private workspaceFolderCountContext: IContextKey<number>;
-
-	private openFolderWorkspaceSupportContext: IContextKey<boolean>;
-	private enterMultiRootWorkspaceSupportContext: IContextKey<boolean>;
-	private emptyWorkspaceSupportContext: IContextKey<boolean>;
 
 	private virtualWorkspaceContext: IContextKey<string>;
 	private temporaryWorkspaceContext: IContextKey<boolean>;
@@ -130,22 +125,22 @@ export class WorkbenchContextKeysHandler extends Disposable {
 		this.updateWorkbenchStateContextKey();
 
 		// Workspace Folder Count
-		this.workspaceFolderCountContext = WorkspaceFolderCountContext.bindTo(this.contextKeyService);
-		this.updateWorkspaceFolderCountContextKey();
+		// this.workspaceFolderCountContext = WorkspaceFolderCountContext.bindTo(this.contextKeyService);
+		// this.updateWorkspaceFolderCountContextKey();
 
 		// Opening folder support: support for opening a folder workspace
 		// (e.g. "Open Folder...") is limited in web when not connected
 		// to a remote.
-		this.openFolderWorkspaceSupportContext = OpenFolderWorkspaceSupportContext.bindTo(this.contextKeyService);
-		this.openFolderWorkspaceSupportContext.set(isNative || typeof this.environmentService.remoteAuthority === 'string');
+		// this.openFolderWorkspaceSupportContext = OpenFolderWorkspaceSupportContext.bindTo(this.contextKeyService);
+		// this.openFolderWorkspaceSupportContext.set(isNative || typeof this.environmentService.remoteAuthority === 'string');
 
 		// Empty workspace support: empty workspaces require built-in file system
 		// providers to be available that allow to enter a workspace or open loose
 		// files. This condition is met:
 		// - desktop: always
 		// -     web: only when connected to a remote
-		this.emptyWorkspaceSupportContext = EmptyWorkspaceSupportContext.bindTo(this.contextKeyService);
-		this.emptyWorkspaceSupportContext.set(isNative || typeof this.environmentService.remoteAuthority === 'string');
+		// this.emptyWorkspaceSupportContext = EmptyWorkspaceSupportContext.bindTo(this.contextKeyService);
+		// this.emptyWorkspaceSupportContext.set(isNative || typeof this.environmentService.remoteAuthority === 'string');
 
 		// Entering a multi root workspace support: support for entering a multi-root
 		// workspace (e.g. "Open Workspace from File...", "Duplicate Workspace", "Save Workspace")
@@ -154,8 +149,8 @@ export class WorkbenchContextKeysHandler extends Disposable {
 		// This condition is met:
 		// - desktop: always
 		// -     web: only when connected to a remote
-		this.enterMultiRootWorkspaceSupportContext = EnterMultiRootWorkspaceSupportContext.bindTo(this.contextKeyService);
-		this.enterMultiRootWorkspaceSupportContext.set(isNative || typeof this.environmentService.remoteAuthority === 'string');
+		// this.enterMultiRootWorkspaceSupportContext = EnterMultiRootWorkspaceSupportContext.bindTo(this.contextKeyService);
+		// this.enterMultiRootWorkspaceSupportContext.set(isNative || typeof this.environmentService.remoteAuthority === 'string');
 
 		// Editor Layout
 		this.splitEditorsVerticallyContext = SplitEditorsVertically.bindTo(this.contextKeyService);
@@ -219,10 +214,10 @@ export class WorkbenchContextKeysHandler extends Disposable {
 		this._register(Event.runAndSubscribe(onDidRegisterWindow, ({ window, disposables }) => disposables.add(addDisposableListener(window, EventType.FOCUS_IN, () => this.updateInputContextKeys(window.document), true)), { window: mainWindow, disposables: this._store }));
 
 		this._register(this.contextService.onDidChangeWorkbenchState(() => this.updateWorkbenchStateContextKey()));
-		this._register(this.contextService.onDidChangeWorkspaceFolders(() => {
-			this.updateWorkspaceFolderCountContextKey();
-			this.updateWorkspaceContextKeys();
-		}));
+		// this._register(this.contextService.onDidChangeWorkspaceFolders(() => {
+		// 	this.updateWorkspaceFolderCountContextKey();
+		// 	this.updateWorkspaceContextKeys();
+		// }));
 
 		this._register(this.configurationService.onDidChangeConfiguration(e => {
 			if (e.affectsConfiguration('workbench.editor.openSideBySideDirection')) {
@@ -331,9 +326,9 @@ export class WorkbenchContextKeysHandler extends Disposable {
 		this.workbenchStateContext.set(this.getWorkbenchStateString());
 	}
 
-	private updateWorkspaceFolderCountContextKey(): void {
-		this.workspaceFolderCountContext.set(this.contextService.getWorkspace().folders.length);
-	}
+	// private updateWorkspaceFolderCountContextKey(): void {
+	// 	this.workspaceFolderCountContext.set(this.contextService.getWorkspace().folders.length);
+	// }
 
 	private updateSplitEditorsVerticallyContext(): void {
 		const direction = preferredSideBySideGroupDirection(this.configurationService);
